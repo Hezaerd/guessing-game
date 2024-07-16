@@ -1,3 +1,9 @@
+pub mod game;
+
+use game::Game;
+
 fn main() {
-    println!("Hello, world!");
+    let mut game: Game = Game::new();
+
+    game.start();
 }
