@@ -9,3 +9,5 @@ edition = "2021"
 rand = "0.8.5"
 prettytable-rs = "0.10.0"
 fancy_print = "0.1.0"
+serde = {version = "1.0.204", features = ["derive"]}
+serde_json = "1.0"
