@@ -1,5 +1,5 @@
 extern crate prettytable;
-use prettytable::{color, Attr, Cell, Row, Table};
+use prettytable::{color, format::Alignment, Attr, Cell, Row, Table};
 
 use rand::Rng;
 
@@ -120,9 +120,21 @@ impl Game {
 
         // create a table
         let mut table = Table::new();
+
+        table.set_titles(Row::new(vec![
+            Cell::new_align("", Alignment::CENTER),
+            Cell::new_align("Guess the number!", Alignment::CENTER)
+                .with_style(Attr::ForegroundColor(color::CYAN)),
+            Cell::new_align("", Alignment::CENTER),
+        ]));
+
         table.add_row(Row::new(vec![
-            Cell::new("1. Play").with_style(Attr::ForegroundColor(color::GREEN)),
-            Cell::new("2. Exit").with_style(Attr::ForegroundColor(color::RED)),
+            Cell::new_align("1. Play", Alignment::CENTER)
+                .with_style(Attr::ForegroundColor(color::GREEN)),
+            Cell::new_align("2. Leaderboard", Alignment::CENTER)
+                .with_style(Attr::ForegroundColor(color::MAGENTA)),
+            Cell::new_align("3. Exit", Alignment::CENTER)
+                .with_style(Attr::ForegroundColor(color::RED)),
         ]));
 
         // print the table
@@ -135,7 +147,7 @@ impl Game {
         // match the input
         match input.trim() {
             "1" => self.play(),
-            "2" => self.exit(),
+            "3" => self.exit(),
             _ => self.menu_screen(),
         }
     }
