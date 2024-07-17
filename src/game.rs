@@ -1,9 +1,8 @@
 extern crate prettytable;
-use prettytable::{color, format::Alignment, Attr, Cell, Row, Table};
-
-use rand::Rng;
-
+use crate::difficulty::Difficulty;
 use fancy_print::{Animation, FancyPrinter};
+use prettytable::{color, format::Alignment, Attr, Cell, Row, Table};
+use rand::Rng;
 use std::time::Duration;
 
 macro_rules! clear_screen {
@@ -22,15 +21,9 @@ pub struct Game {
     printer: FancyPrinter,
 }
 
-enum Difficulty {
-    None,
-    Easy,
-    Medium,
-    Hard,
-}
-
 impl Game {
     pub fn new() -> Self {
+        // create a fancy printer
         let printer = FancyPrinter::builder()
             .animation(Animation::Typing)
             .time_delay(Duration::from_millis(25))
@@ -147,6 +140,7 @@ impl Game {
         // match the input
         match input.trim() {
             "1" => self.play(),
+            "2" => self.leaderboard_screen(),
             "3" => self.exit(),
             _ => self.menu_screen(),
         }
@@ -243,6 +237,20 @@ impl Game {
             Cell::new("Attempts:").with_style(Attr::Bold),
             Cell::new(&self.attempts.to_string()).with_style(Attr::Bold),
         ]));
+
+        // print the table
+        table.printstd();
+    }
+
+    fn leaderboard_screen(&self) {
+        // clear the screen
+        clear_screen!();
+
+        // create a table
+        let mut table = Table::new();
+        table.set_titles(Row::new(vec![Cell::new("Leaderboard")
+            .with_style(Attr::Bold)
+            .with_style(Attr::ForegroundColor(color::MAGENTA))]));
 
         // print the table
         table.printstd();

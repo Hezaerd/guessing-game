@@ -1,3 +1,4 @@
+pub mod difficulty;
 pub mod game;
 
 use game::Game;
