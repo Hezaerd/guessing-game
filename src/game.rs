@@ -68,9 +68,9 @@ impl Game {
         let mut rng = rand::thread_rng();
 
         match self.difficulty {
-            Difficulty::Easy => self.secret_number = rng.gen_range(1..=1000),
-            Difficulty::Medium => self.secret_number = rng.gen_range(1..=10000),
-            Difficulty::Hard => self.secret_number = rng.gen_range(1..=1000000),
+            Difficulty::Easy => self.secret_number = rng.gen_range(1..=100),
+            Difficulty::Medium => self.secret_number = rng.gen_range(1..=1000),
+            Difficulty::Hard => self.secret_number = rng.gen_range(1..=10000),
             _ => self.difficulty_screen(),
         }
     }
@@ -105,10 +105,7 @@ impl Game {
                     self.attempts += 1;
 
                     if number == self.secret_number {
-                        println!(
-                            "Congratulations! You guessed the number in {} attempts.",
-                            self.attempts
-                        );
+                        self.win_screen();
                         break;
                     }
                 }
@@ -179,7 +176,6 @@ impl Game {
         let mut table = Table::new();
         table.set_titles(Row::new(vec![Cell::new("Guess the number!")
             .with_style(Attr::Bold)
-            .with_style(Attr::Blink)
             .with_style(match self.difficulty {
                 Difficulty::Easy => Attr::ForegroundColor(color::GREEN),
                 Difficulty::Medium => Attr::ForegroundColor(color::YELLOW),
@@ -194,10 +190,12 @@ impl Game {
         ]));
 
         // display the previous attempt
-        table.add_row(Row::new(vec![
-            Cell::new("Previous attempt:").with_style(Attr::Bold),
-            Cell::new(&self.attempt.to_string()).with_style(Attr::Bold),
-        ]));
+        if self.attempts > 0 {
+            table.add_row(Row::new(vec![
+                Cell::new("Previous attempt:").with_style(Attr::Bold),
+                Cell::new(&self.attempt.to_string()).with_style(Attr::Bold),
+            ]));
+        }
 
         // print the table
         table.printstd();
@@ -212,5 +210,29 @@ impl Game {
         }
     }
 
-    fn win_screen(&mut self)
+    fn win_screen(&mut self) {
+        // clear the screen
+        clear_screen!();
+
+        // create a table
+        let mut table = Table::new();
+        table.set_titles(Row::new(vec![Cell::new("Congratulations!")
+            .with_style(Attr::Bold)
+            .with_style(Attr::ForegroundColor(color::GREEN))]));
+
+        // display the secret number
+        table.add_row(Row::new(vec![
+            Cell::new("Secret number:").with_style(Attr::Bold),
+            Cell::new(&self.secret_number.to_string()).with_style(Attr::Bold),
+        ]));
+
+        // display the number of attempts
+        table.add_row(Row::new(vec![
+            Cell::new("Attempts:").with_style(Attr::Bold),
+            Cell::new(&self.attempts.to_string()).with_style(Attr::Bold),
+        ]));
+
+        // print the table
+        table.printstd();
+    }
 }
